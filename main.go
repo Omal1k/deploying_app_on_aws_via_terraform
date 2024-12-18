@@ -68,6 +68,7 @@ func main() {
 
 func httpErrorBadRequest(err error, ctx *gin.Context) {
 	httpError(err, ctx, http.StatusBadRequest)
+	c.String(http.StatusBadRequest, err.Error())
 }
 
 func httpErrorInternalServerError(err error, ctx *gin.Context) {
