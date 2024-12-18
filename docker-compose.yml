@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  silly-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/vendor
+    environment:
+      - DB_ENDPOINT=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=1234
+      - DB_NAME=db
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    command: air
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - silly-demo
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:
